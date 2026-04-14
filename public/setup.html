@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Setup – Network Diagnostics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .setup-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    padding: 30px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .setup-panel input {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border-light);
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .setup-panel button {
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+    justify-content: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="setup-panel">
+  <div class="panel-header" style="justify-content: center; padding-bottom: 20px;">
+    <span class="panel-title">FIRST TIME SETUP</span>
+  </div>
+  <input type="text" id="user" placeholder="Admin Username" />
+  <input type="password" id="pass" placeholder="Password" />
+  <input type="password" id="pass-confirm" placeholder="Confirm Password" />
+  <button class="run-btn" onclick="setupAdmin()">Create Account</button>
+  <div id="error-msg" style="color: var(--red); font-size: 13px; text-align: center; display: none;">Setup Error</div>
+</div>
+
+<script>
+async function setupAdmin() {
+  const username = document.getElementById("user").value.trim();
+  const password = document.getElementById("pass").value;
+  const confirmPassword = document.getElementById("pass-confirm").value;
+  const err = document.getElementById("error-msg");
+
+  if (!username) {
+    err.textContent = "Username is required";
+    err.style.display = 'block';
+    return;
+  }
+
+  if (!password || password !== confirmPassword) {
+    err.textContent = "Passwords do not match";
+    err.style.display = 'block';
+    return;
+  }
+
+  const res = await fetch('/setup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password, confirmPassword })
+  });
+
+  if (res.ok) {
+    window.location.href = "/login.html";
+  } else {
+    const data = await res.json();
+    err.textContent = data.error || "Setup failed";
+    err.style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>
