@@ -75,7 +75,11 @@ server {
 
 ## Screenshots
 
-*(Placeholder section: Add images of the admin portal and Smokeping charts here!)*
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Admin Portal
+![Admin](screenshots/admin.png)
 
 ## Security Note
 
